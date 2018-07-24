@@ -6,7 +6,7 @@ return [
         'url' => [''],
         'isDirect' => true,
     ],
-    'membership' => [
+    'usermanager' => [
         'label' => 'Membership',
         'iconClass' => 'fa fa-star',
         'navigation' => [
