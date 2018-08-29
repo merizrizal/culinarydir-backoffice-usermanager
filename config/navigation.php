@@ -1,25 +1,35 @@
 <?php
 return [
-    'mainMenu'=> [
-        'label' => 'Main Menu',
-        'iconClass' => 'fa fa-home',
-        'url' => [''],
-        'isDirect' => true,
-    ],
-    'usermanager' => [
-        'label' => 'Membership',
-        'iconClass' => 'fa fa-star',
+    'params' => [
         'navigation' => [
-            'allRegistry' => [
-                'label' => 'All Registry',
-                'url' => ['marketing/registry-business/index'],
-                'isDirect' => false,
+            'mainMenu'=> [
+                'label' => 'Main Menu',
+                'iconClass' => 'fa fa-home',
+                'url' => [''],
+                'isDirect' => true,
             ],
-            'myRegistry' => [
-                'label' => 'My Registry',
-                'url' => ['marketing/registry-business/index', 'type' => 'my'],
+            'userManager' => [
+                'label' => 'User Management',
+                'iconClass' => 'fa fa-users',
+                'navigation' => [
+                    'user' => [
+                        'label' => 'User',
+                        'url' => ['usermanager/user/index'],
+                        'isDirect' => false,
+                    ],
+                    'userLevel' => [
+                        'label' => 'User Level',
+                        'url' => ['usermanager/user-level/index'],
+                        'isDirect' => false,
+                    ],
+                ]
+            ],
+            'person' => [
+                'label' => 'Person',
+                'iconClass' => 'fa fa-user',
+                'url' => ['usermanager/person/index'],
                 'isDirect' => false,
             ],
         ]
-    ],
+    ]
 ];

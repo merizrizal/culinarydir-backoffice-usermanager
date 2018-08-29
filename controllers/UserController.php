@@ -1,11 +1,10 @@
 <?php
 
-namespace backend\controllers;
+namespace backoffice\modules\usermanager\controllers;
 
 use Yii;
-use backend\models\User;
-use backend\models\search\UserSearch;
-use sybase\SybaseController;
+use core\models\User;
+use core\models\search\UserSearch;
 use sycomponent\Tools;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -15,7 +14,7 @@ use yii\widgets\ActiveForm;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends SybaseController
+class UserController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc
@@ -40,10 +39,6 @@ class UserController extends SybaseController
      */
     public function actionIndex()
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -61,10 +56,6 @@ class UserController extends SybaseController
      */
     public function actionView($id)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -77,10 +68,6 @@ class UserController extends SybaseController
      */
     public function actionCreate($save = null)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $render = 'create';
 
         $model = new User();
@@ -128,10 +115,6 @@ class UserController extends SybaseController
      */
     public function actionUpdate($id, $save = null)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
@@ -170,10 +153,6 @@ class UserController extends SybaseController
 
     public function actionUpdatePassword($id, $save = null)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
@@ -242,7 +221,7 @@ class UserController extends SybaseController
 
         $return = [];
 
-        $return['url'] = Yii::$app->urlManager->createUrl(['user/index']);
+        $return['url'] = Yii::$app->urlManager->createUrl([$this->module->id . '/user/index']);
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;

@@ -4,12 +4,12 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\file\FileInput;
-use backend\models\UserLevel;
+use core\models\UserLevel;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\User */
+/* @var $model core\models\User */
 /* @var $form yii\widgets\ActiveForm */
 
 kartik\select2\Select2Asset::register($this);

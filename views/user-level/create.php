@@ -4,9 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\UserLevel */
+/* @var $model core\models\UserLevel */
 
 $this->title = 'Create ' . Yii::t('app', 'User Level');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Level'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

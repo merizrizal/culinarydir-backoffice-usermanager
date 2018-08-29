@@ -7,7 +7,7 @@ use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\User */
+/* @var $model core\models\User */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'User',
@@ -32,6 +32,7 @@ if ($status !== null) :
 endif;
 
 $this->title = $model->full_name;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
@@ -68,6 +69,12 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'data-not-ajax' => 1,
                             'model-id' => $model->email,
                             'model-name' => $model->full_name,
+                        ]) ?>
+
+                    <?= Html::a('<i class="fa fa-wrench"></i> ' . 'Update Password',
+                        ['update-password', 'id' => $model->id],
+                        [
+                            'class' => 'btn btn-default',
                         ]) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',

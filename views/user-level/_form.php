@@ -1,14 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
-use backend\models\UserAppModule;
+use core\models\UserAppModule;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\UserLevel */
+/* @var $model core\models\UserLevel */
 /* @var $form yii\widgets\ActiveForm */
 
 kartik\select2\Select2Asset::register($this);
@@ -92,54 +91,6 @@ $form = ActiveForm::begin([
                         <?= $form->field($model, 'nama_level')->textInput(['maxlength' => 32]) ?>
 
                         <?= $form->field($model, 'is_super_admin')->checkbox(['value' => true], false) ?>
-
-                        <?= $form->field($model, 'default_action_crm')->dropDownList(
-                                ArrayHelper::map(
-                                    $userAppModule,
-                                    'id',
-                                    function($data) {
-                                        if ($data['sub_program'] == '/') {
-                                            return '(frontend)/' . $data['nama_module'] . '/' . $data['module_action'];
-                                        } else {
-                                            return $data['sub_program'] . '/' . $data['nama_module'] . '/' . $data['module_action'];
-                                        }
-                                    }
-                                ),
-                                [
-                                    'prompt' => '',
-                                ]) ?>
-
-                        <?= $form->field($model, 'default_action_cms')->dropDownList(
-                                ArrayHelper::map(
-                                    $userAppModule,
-                                    'id',
-                                    function($data) {
-                                        if ($data['sub_program'] == '/') {
-                                            return '(frontend)/' . $data['nama_module'] . '/' . $data['module_action'];
-                                        } else {
-                                            return $data['sub_program'] . '/' . $data['nama_module'] . '/' . $data['module_action'];
-                                        }
-                                    }
-                                ),
-                                [
-                                    'prompt' => '',
-                                ]) ?>
-
-                        <?= $form->field($model, 'default_action_front')->dropDownList(
-                                ArrayHelper::map(
-                                    $userAppModule,
-                                    'id',
-                                    function($data) {
-                                        if ($data['sub_program'] == '/') {
-                                            return '(frontend)/' . $data['nama_module'] . '/' . $data['module_action'];
-                                        } else {
-                                            return $data['sub_program'] . '/' . $data['nama_module'] . '/' . $data['module_action'];
-                                        }
-                                    }
-                                ),
-                                [
-                                    'prompt' => '',
-                                ]) ?>
 
                         <?= $form->field($model, 'keterangan')->textarea(['rows' => 2]) ?>
 

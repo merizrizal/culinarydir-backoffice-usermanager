@@ -1,13 +1,12 @@
 <?php
 
-namespace backend\controllers;
+namespace backoffice\modules\usermanager\controllers;
 
 use Yii;
-use backend\models\UserLevel;
-use backend\models\search\UserLevelSearch;
-use backend\models\UserAppModule;
-use backend\models\UserAkses;
-use sybase\SybaseController;
+use core\models\UserLevel;
+use core\models\search\UserLevelSearch;
+use core\models\UserAppModule;
+use core\models\UserAkses;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -16,7 +15,7 @@ use yii\widgets\ActiveForm;
 /**
  * UserLevelController implements the CRUD actions for UserLevel model.
  */
-class UserLevelController extends SybaseController
+class UserLevelController extends \backoffice\controllers\BaseController
 {
     private $params = [];
 
@@ -43,10 +42,6 @@ class UserLevelController extends SybaseController
      */
     public function actionIndex()
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $searchModel = new UserLevelSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -64,10 +59,6 @@ class UserLevelController extends SybaseController
      */
     public function actionView($id)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $this->params['id'] = $id;
 
         $modelUserAppModule = UserAppModule::find()
@@ -95,10 +86,6 @@ class UserLevelController extends SybaseController
      */
     public function actionCreate($save = null)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $render = 'create';
 
         $model = new UserLevel();
@@ -183,10 +170,6 @@ class UserLevelController extends SybaseController
      */
     public function actionUpdate($id, $save = null)
     {
-        if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
-        }
-
         $model = $this->findModel($id);
         $this->params['id'] = $id;
 
@@ -303,7 +286,7 @@ class UserLevelController extends SybaseController
 
         $return = [];
 
-        $return['url'] = Yii::$app->urlManager->createUrl(['user-level/index']);
+        $return['url'] = Yii::$app->urlManager->createUrl([$this->module->id . '/user-level/index']);
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;

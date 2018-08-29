@@ -7,7 +7,7 @@ use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\userLevelSearch */
+/* @var $searchModel core\models\userLevelSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $ajaxRequest = new AjaxRequest([
@@ -33,6 +33,7 @@ if ($status !== null) :
 endif;
 
 $this->title = Yii::t('app', 'User Level');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
 <?= $ajaxRequest->component(true) ?>

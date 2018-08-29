@@ -7,7 +7,7 @@ use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\UserLevel */
+/* @var $model core\models\UserLevel */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'UserLevel',
@@ -32,6 +32,7 @@ if ($status !== null) :
 endif;
 
 $this->title = $model->nama_level;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Level'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
@@ -90,16 +91,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                                 'attribute' => 'is_super_admin',
                                 'format' => 'raw',
                                 'value' => Html::checkbox('is_super_admin', $model->is_super_admin, ['value' => $model->is_super_admin, 'disabled' => 'disabled']),
-                            ],
-                            [
-                                'attribute' => 'default_action_crm',
-                                'format' => 'raw',
-                                'value' => !empty($model->defaultActionCrm) ? ($model->defaultActionCrm->sub_program . '/' . $model->defaultActionCrm->nama_module . '/' . $model->defaultActionCrm->module_action) : null,
-                            ],
-                            [
-                                'attribute' => 'default_action_cms',
-                                'format' => 'raw',
-                                'value' => !empty($model->defaultActionCms) ? ($model->defaultActionCms->sub_program . '/' . $model->defaultActionCms->nama_module . '/' . $model->defaultActionCms->module_action) : null,
                             ],
                             'keterangan:ntext',
                         ],

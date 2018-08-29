@@ -23,6 +23,6 @@ class UserManagerModule extends \yii\base\Module
     {
         parent::init();
 
-        Yii::$app->params['navigation'] = require __DIR__ . '/config/navigation.php';
+        Yii::configure($this, require __DIR__ . '/config/navigation.php');
     }
 }
