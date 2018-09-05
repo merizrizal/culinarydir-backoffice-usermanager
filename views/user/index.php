@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         </div>
                     </div>',
                 'buttons' => [
-                    'view' =>  function($url, $model, $key) {
+                    'view' => function($url, $model, $key) {
                         return Html::a('<i class="fa fa-search-plus"></i>', $url, [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'title' => 'View',
                         ]);
                     },
-                    'update' =>  function($url, $model, $key) {
+                    'update' => function($url, $model, $key) {
                         return Html::a('<i class="fa fa-pencil-alt"></i>', $url, [
                             'id' => 'update',
                             'class' => 'btn btn-success',
@@ -128,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'title' => 'Edit',
                         ]);
                     },
-                    'update-password' =>  function($url, $model, $key) {
+                    'update-password' => function($url, $model, $key) {
                         return Html::a('<i class="fa fa-wrench"></i>', $url, [
                             'id' => 'update-password',
                             'class' => 'btn btn-success',
@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'title' => 'Update Password',
                         ]);
                     },
-                    'delete' =>  function($url, $model, $key) {
+                    'delete' => function($url, $model, $key) {
                         return Html::a('<i class="fa fa-trash-alt"></i>', $url, [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',
