@@ -217,4 +217,4 @@ $jscript = '
     });
 ';
 
-$this->registerJs($jscript . Yii::$app->params['checkbox-radio-script']()); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
