@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use core\models\UserAppModule;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
