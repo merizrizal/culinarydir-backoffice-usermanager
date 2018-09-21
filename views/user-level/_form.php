@@ -33,9 +33,7 @@ if ($status !== null) :
     $notif->theScript();
     echo $notif->renderDialog();
 
-endif;
-
-$userAppModule = UserAppModule::find()->asArray()->all(); ?>
+endif; ?>
 
 <?= $ajaxRequest->component() ?>
 
