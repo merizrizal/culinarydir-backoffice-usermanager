@@ -2,6 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $model core\models\UserLevel */
+/* @var $modelUserAppModule core\models\UserAppModule */
 
 $this->title = 'Create ' . Yii::t('app', 'User Level');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];

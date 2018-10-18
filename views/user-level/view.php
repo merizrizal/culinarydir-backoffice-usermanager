@@ -8,6 +8,9 @@ use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\UserLevel */
+/* @var $modelUserAppModule core\models\UserAppModule */
+/* @var $keySubprogram string */
+/* @var $userAksesId int */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'UserLevel',
@@ -114,6 +117,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row" id="roles">
                         <?php
                         foreach ($modelUserAppModule as $keySubprogram => $subprogram):
+                        
                             foreach ($subprogram as $key => $value): ?>
 
                             <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3" id="roles-item">
@@ -127,12 +131,14 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                                     <p>
                                         <?php
                                         foreach ($value as $moduleAction) {
+                                            
                                             $checkBoxId = $moduleAction['nama_module'] . '-' . $moduleAction['module_action'];
                                             $checkBoxName = 'roles[' . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][action]';
                                             $isActive = false;
                                             $userAksesId = 0;
 
                                             if (count($moduleAction['userAkses']) > 0) {
+                                                
                                                 $userAksesId = $moduleAction['userAkses'][0]['id'];
                                                 $isActive = $moduleAction['userAkses'][0]['is_active'];
                                             }

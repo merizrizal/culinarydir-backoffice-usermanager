@@ -8,6 +8,7 @@ use sycomponent\NotificationDialog;
 /* @var $this yii\web\View */
 /* @var $model core\models\UserLevel */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $modelUserAppModule core\models\UserAppModule */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -107,7 +108,7 @@ $form = ActiveForm::begin([
                 </div>
             </div>
         </div>
-    </div><!-- /.row -->
+    </div>
 
     <div class="row">
         <div class="col-sm-12">
