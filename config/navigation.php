@@ -2,12 +2,6 @@
 return [
     'params' => [
         'navigation' => [
-            'mainMenu'=> [
-                'label' => 'Main Menu',
-                'iconClass' => 'fa fa-home',
-                'url' => [''],
-                'isDirect' => true,
-            ],
             'userManager' => [
                 'label' => 'User Management',
                 'iconClass' => 'fa fa-users',
