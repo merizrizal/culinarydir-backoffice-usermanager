@@ -79,7 +79,7 @@ endif; ?>
                                 <div class="col-lg-6">
                                     <?php
                                     if (!$model->isNewRecord)
-                                        echo Html::a('<i class="fa fa-upload"></i> ' . 'Create', ['create'], ['class' => 'btn btn-success']); ?>
+                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']); ?>
                                 </div>
                             </div>
                         </div>

@@ -46,21 +46,21 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> ' . 'Create',
+                    <?= Html::a('<i class="fa fa-upload"></i> Create',
                         ['create'],
                         [
                             'class' => 'btn btn-success',
                             'style' => 'color:white'
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit',
                         ['update', 'id' => $model->id],
                         [
                             'class' => 'btn btn-primary',
                             'style' => 'color:white'
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> ' . 'Delete',
+                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete',
                         ['delete', 'id' => $model->id],
                         [
                             'id' => 'delete',
@@ -71,13 +71,13 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'model-name' => $model->full_name,
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-wrench"></i> ' . 'Update Password',
+                    <?= Html::a('<i class="fa fa-wrench"></i> Update Password',
                         ['update-password', 'id' => $model->id],
                         [
                             'class' => 'btn btn-default',
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel',
                         ['index'],
                         [
                             'class' => 'btn btn-default',
