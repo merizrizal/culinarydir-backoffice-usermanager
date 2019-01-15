@@ -17,8 +17,6 @@ use yii\widgets\ActiveForm;
  */
 class UserLevelController extends \backoffice\controllers\BaseController
 {
-    private $params = [];
-
     /**
      * @inheritdoc
      */
@@ -59,17 +57,17 @@ class UserLevelController extends \backoffice\controllers\BaseController
      */
     public function actionView($id)
     {
-        $this->params['id'] = $id;
-
         $modelUserAppModule = UserAppModule::find()
-                ->joinWith([
-                    'userAkses' => function($query) {
-                        $query->onCondition('user_akses.user_level_id = ' . $this->params['id']);
-                    },
-                ])->asArray()->all();
+            ->joinWith([
+                'userAkses' => function ($query) use ($id) {
+                    
+                    $query->onCondition(['user_akses.user_level_id' => $id]);
+                },
+            ])->asArray()->all();
 
         $dataUserAppModule = [];
         foreach ($modelUserAppModule as $value) {
+            
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
@@ -138,21 +136,17 @@ class UserLevelController extends \backoffice\controllers\BaseController
             }
         }
 
-        if (empty($model->id)) {
-            $this->params['id'] = -90909;
-        } else {
-            $this->params['id'] = $model->id;
-        }
-
         $modelUserAppModule = UserAppModule::find()
-                ->joinWith([
-                    'userAkses' => function($query) {
-                        $query->onCondition('user_akses.user_level_id = ' . $this->params['id']);
-                    },
-                ])->asArray()->all();
+            ->joinWith([
+                'userAkses' => function ($query) use ($model) {
+                    
+                    $query->onCondition(['user_akses.user_level_id' => $model->id]);
+                },
+            ])->asArray()->all();
 
         $dataUserAppModule = [];
         foreach ($modelUserAppModule as $value) {
+            
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
@@ -171,7 +165,6 @@ class UserLevelController extends \backoffice\controllers\BaseController
     public function actionUpdate($id, $save = null)
     {
         $model = $this->findModel($id);
-        $this->params['id'] = $id;
 
         if ($model->load(($post = Yii::$app->request->post()))) {
 
@@ -189,6 +182,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
                     foreach ($post['roles'] as $value) {
 
                         if ($value['userAksesId'] > 0) {
+                            
                             $modelUserAkses = UserAkses::findOne($value['userAksesId']);
                         } else {
 
@@ -200,6 +194,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
                         $modelUserAkses->is_active = !empty($value['action']) ? 1 : 0;
 
                         if (!($flag = $modelUserAkses->save())) {
+                            
                             break;
                         }
                     }
@@ -224,14 +219,16 @@ class UserLevelController extends \backoffice\controllers\BaseController
         }
 
         $modelUserAppModule = UserAppModule::find()
-                ->joinWith([
-                    'userAkses' => function($query) {
-                        $query->onCondition('user_akses.user_level_id = ' . $this->params['id']);
-                    },
-                ])->asArray()->all();
+            ->joinWith([
+                'userAkses' => function ($query) use ($id) {
+                    
+                    $query->onCondition(['user_akses.user_level_id' => $id]);
+                },
+            ])->asArray()->all();
 
         $dataUserAppModule = [];
         foreach ($modelUserAppModule as $value) {
+            
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
