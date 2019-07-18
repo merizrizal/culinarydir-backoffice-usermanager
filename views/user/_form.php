@@ -4,12 +4,12 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\file\FileInput;
-use core\models\UserLevel;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\User */
+/* @var $modelUserLevel core\models\UserLevel */
 /* @var $form yii\widgets\ActiveForm */
 
 kartik\select2\Select2Asset::register($this);
@@ -25,7 +25,8 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -34,10 +35,9 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
+}
 
-endif; ?>
-
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="row">
     <div class="col-sm-12">
@@ -73,33 +73,67 @@ endif; ?>
                 ]); ?>
 
                     <div class="x_title">
-
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
+
                                     <?php
-                                    if (!$model->isNewRecord)
-                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']); ?>
+                                    if (!$model->isNewRecord) {
+
+                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']);
+                                    } ?>
+
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="x_content">
 
-                        <?= $form->field($model, 'user_level_id')->dropDownList(
-                                ArrayHelper::map(
-                                    UserLevel::find()->orderBy('nama_level')->asArray()->all(),
-                                    'id',
-                                    function($data) {
-                                        return $data['nama_level'];
+                    	<?= $form->field($model, 'user_level_id')->checkboxList(
+                	        ArrayHelper::map(
+                    	        $modelUserLevel,
+                    	        'id',
+                    	        function($data) {
+
+                    	            return $data['nama_level'];
+                    	        }
+                	        ),
+                	        [
+                	            'item' => function ($index, $label, $name, $checked, $value) use ($modelUserLevel) {
+
+                    	            $checkboxes = '
+                                        <div class="row">
+                                            <div class="col-xs-12 col">
+                                                <label>' .
+                                                    Html::checkbox($name, $checked, [
+                                                        'value' => $value,
+                                                        'class' => 'user-level icheck',
+                                                    ]) . ' ' . $label .
+                                                '</label>
+                                            </div>
+                                        </div>
+                                    ';
+
+                                    $userLevelCount = count($modelUserLevel);
+
+                                    $index++;
+
+                                    if ($index === 1) {
+
+                                        return '<div class="col-xs-6">' . $checkboxes;
+                                    } else if ($index === $userLevelCount) {
+
+                                        return $checkboxes . '</div>';
+                                    } else if (($index % ceil($userLevelCount / 2)) === 0) {
+
+                                        return $checkboxes . '</div><div class="col-xs-6">';
+                                    } else {
+
+                                        return $checkboxes;
                                     }
-                                ),
-                                [
-                                    'prompt' => '',
-                                    'style' => 'width: 100%'
-                                ]) ?>
+                	            }
+                	        ]) ?>
 
                         <?= $form->field($model, 'email', [
                             'enableAjaxValidation' => true
@@ -147,19 +181,11 @@ endif; ?>
             </div>
         </div>
     </div>
-</div><!-- /.row -->
+</div>
 
 <?php
-
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$jscript = '
-    $("#user-user_level_id").select2({
-        theme: "krajee",
-        placeholder: "Pilih"
-    });
-';
-
-$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script']()); ?>

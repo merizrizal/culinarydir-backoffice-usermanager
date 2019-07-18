@@ -4,6 +4,7 @@ namespace backoffice\modules\usermanager\controllers;
 
 use Yii;
 use core\models\User;
+use core\models\UserLevel;
 use core\models\search\UserSearch;
 use sycomponent\Tools;
 use yii\web\NotFoundHttpException;
@@ -72,6 +73,10 @@ class UserController extends \backoffice\controllers\BaseController
 
         $model = new User();
 
+        $modelUserLevel = UserLevel::find()
+            ->orderBy('nama_level')
+            ->asArray()->all();
+
         if ($model->load(Yii::$app->request->post())) {
 
             if (empty($save)) {
@@ -104,6 +109,7 @@ class UserController extends \backoffice\controllers\BaseController
 
         return $this->render($render, [
             'model' => $model,
+            'modelUserLevel' => $modelUserLevel
         ]);
     }
 
@@ -116,6 +122,10 @@ class UserController extends \backoffice\controllers\BaseController
     public function actionUpdate($id, $save = null)
     {
         $model = $this->findModel($id);
+
+        $modelUserLevel = UserLevel::find()
+            ->orderBy('nama_level')
+            ->asArray()->all();
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -148,6 +158,7 @@ class UserController extends \backoffice\controllers\BaseController
 
         return $this->render('update', [
             'model' => $model,
+            'modelUserLevel' => $modelUserLevel
         ]);
     }
 
