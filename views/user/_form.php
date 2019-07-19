@@ -11,6 +11,8 @@ use sycomponent\NotificationDialog;
 /* @var $model core\models\User */
 /* @var $modelUserLevel core\models\UserLevel */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $modelUserRole core\models\UserRole */
+/* @var $dataUserRole Array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -90,7 +92,7 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="x_content">
 
-                    	<?= $form->field($model, 'user_level_id')->checkboxList(
+                    	<?= $form->field($modelUserRole, 'user_level_id')->checkboxList(
                 	        ArrayHelper::map(
                     	        $modelUserLevel,
                     	        'id',
@@ -100,7 +102,16 @@ echo $ajaxRequest->component(); ?>
                     	        }
                 	        ),
                 	        [
-                	            'item' => function ($index, $label, $name, $checked, $value) use ($modelUserLevel) {
+                	            'item' => function ($index, $label, $name, $checked, $value) use ($modelUserLevel, $dataUserRole) {
+
+                	                foreach ($dataUserRole as $role) {
+
+                    	                if ($role['user_level_id'] == $value && $role['is_active']) {
+
+                        	                $checked = true;
+                        	                break;
+                        	            }
+                    	            }
 
                     	            $checkboxes = '
                                         <div class="row">
@@ -166,10 +177,12 @@ echo $ajaxRequest->component(); ?>
                             <div class="row">
                                 <div class="col-lg-3"></div>
                                 <div class="col-lg-6">
+
                                     <?php
                                     $icon = '<i class="fa fa-save"></i> ';
                                     echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
                                     echo Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']); ?>
+
                                 </div>
                             </div>
                         </div>

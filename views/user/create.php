@@ -3,6 +3,8 @@
 /* @var $this yii\web\View */
 /* @var $model core\models\User */
 /* @var $modelUserLevel core\models\UserLevel */
+/* @var $modelUserRole core\models\UserRole */
+/* @var $dataUserRole Array */
 
 $this->title = 'Create ' . Yii::t('app', 'User');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
@@ -13,7 +15,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
     <?= $this->render('_form', [
         'model' => $model,
-        'modelUserLevel' => $modelUserLevel
+        'modelUserLevel' => $modelUserLevel,
+        'modelUserRole' => $modelUserRole,
+        'dataUserRole' => $dataUserRole
     ]) ?>
 
 </div>
