@@ -5,9 +5,12 @@ use yii\widgets\DetailView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use backoffice\components\DynamicTable;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\User */
+/* @var $modelUserRole core\models\UserRole */
+/* @var $dataProviderUserRole yii\data\ActiveDataProvider */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'User',
@@ -15,11 +18,31 @@ $ajaxRequest = new AjaxRequest([
 
 $ajaxRequest->view();
 
+$dynamicTableUserRole = new DynamicTable([
+    'model' => $modelUserRole,
+    'tableFields' => [
+        'userLevel.nama_level',
+        [
+            'attribute' => 'is_active',
+            'format' => 'raw',
+            'value' => function ($model, $index, $widget) {
+
+                return Html::checkbox('is_active[]', $model->is_active, ['value' => $index, 'disabled' => 'disabled']);
+            },
+        ],
+        'userLevel.keterangan'
+    ],
+    'dataProvider' => $dataProviderUserRole,
+    'title' => 'User Level',
+    'columnClass' => 'col-sm-12'
+]);
+
 $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -28,22 +51,20 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = $model->full_name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="user-view">
 
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-
                 <div class="x_content">
 
                     <?= Html::a('<i class="fa fa-upload"></i> Create',
@@ -91,7 +112,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'class' => 'table'
                         ],
                         'attributes' => [
-                            'userLevel.nama_level',
                             'email',
                             'username',
                             'full_name',
@@ -109,15 +129,15 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     ]) ?>
 
                 </div>
-
             </div>
         </div>
     </div>
 
+	<?= $dynamicTableUserRole->tableData(); ?>
+
 </div>
 
 <?php
-
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',
@@ -136,6 +156,4 @@ $jscript = Yii::$app->params['checkbox-radio-script']()
     . '$(".iCheck-helper").parent().removeClass("disabled");
 ';
 
-$this->registerJs($jscript);
-
-?>
+$this->registerJs($jscript); ?>

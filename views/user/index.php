@@ -20,7 +20,8 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -29,14 +30,13 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = Yii::t('app', 'User');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component(true) ?>
+echo $ajaxRequest->component(true); ?>
 
 <div class="user-index">
 
@@ -45,9 +45,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'clickedComponent' => 'a#delete',
         'modelAttributeId' => 'model-id',
         'modelAttributeName' => 'model-name',
-    ]); ?>
+    ]);
 
-    <?= GridView::widget([
+    echo GridView::widget([
         'id' => 'grid-view-user',
         'dataProvider' => $dataProvider,
         'pjax' => false,
@@ -81,7 +81,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'userLevel.nama_level',
             'email',
             'username',
             'full_name',
@@ -90,6 +89,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                 'format' => 'raw',
                 'filter' =>  [true => 'True', false => 'False'],
                 'value' => function ($model, $index, $widget) {
+
                     return Html::checkbox('not_active[]', $model->not_active, ['value' => $index, 'disabled' => 'disabled']);
                 },
             ],
@@ -168,9 +168,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 </div>
 
-<?= $modalDialog->renderDialog() ?>
-
 <?php
+echo $modalDialog->renderDialog();
+
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);

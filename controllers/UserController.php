@@ -14,6 +14,7 @@ use yii\widgets\ActiveForm;
 use core\models\UserRole;
 use core\models\UserAksesAppModule;
 use core\models\UserAkses;
+use yii\data\ActiveDataProvider;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -60,8 +61,16 @@ class UserController extends \backoffice\controllers\BaseController
      */
     public function actionView($id)
     {
+        $dataProviderUserRole = new ActiveDataProvider([
+            'query' => UserRole::find()->joinWith(['userLevel'])->andWhere(['user_role.user_id' => $id]),
+            'pagination' => false,
+            'sort' => false
+        ]);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'modelUserRole' => new UserRole(),
+            'dataProviderUserRole' => $dataProviderUserRole
         ]);
     }
 
