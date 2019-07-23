@@ -138,6 +138,26 @@ class UserController extends \backoffice\controllers\BaseController
 
                                     if (($isExist = ($userAksesAppModule->unique_id == $model->id . '-' . $dataUserAkses['user_app_module_id']))) {
 
+                                        $modelUserAksesAppModule = $userAksesAppModule;
+                                        $jsonData = $modelUserAksesAppModule->used_by_user_role;
+
+                                        $jsonDataExist = false;
+
+                                        foreach ($jsonData as $json) {
+
+                                            if ($json == $modelUserRole->unique_id) {
+
+                                                $jsonDataExist = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!$jsonDataExist) {
+
+                                            array_push($jsonData, $modelUserRole->unique_id);
+                                            $modelUserAksesAppModule->used_by_user_role = $jsonData;
+                                        }
+
                                         break;
                                     }
                                 }
@@ -149,11 +169,12 @@ class UserController extends \backoffice\controllers\BaseController
                                     $modelUserAksesAppModule->user_id = $model->id;
                                     $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
                                     $modelUserAksesAppModule->is_active = true;
+                                    $modelUserAksesAppModule->used_by_user_role = [$modelUserRole->unique_id];
+                                }
 
-                                    if (!($flag = $modelUserAksesAppModule->save())) {
+                                if (!($flag = $modelUserAksesAppModule->save())) {
 
-                                        break;
-                                    }
+                                    break;
                                 }
                             }
                         }
@@ -256,29 +277,49 @@ class UserController extends \backoffice\controllers\BaseController
                             array_push($dataUserRole, $modelUserRole->toArray());
 
                             $modelUserAkses = UserAkses::find()
-                                ->andWhere(['user_level_id' => $modelUserRole->user_level_id])
+                                ->andWhere(['user_level_id' => $userLevelId])
                                 ->asArray()->all();
 
                             foreach ($modelUserAkses as $dataUserAkses) {
 
-//                                 $isExist = false;
+                                $isExist = false;
 
-//                                 foreach ($model->userAksesAppModules as $userAksesAppModule) {
+                                foreach ($model->userAksesAppModules as $userAksesAppModule) {
 
-//                                     if (($isExist = ($userAksesAppModule->unique_id == $id . '-' . $dataUserAkses['user_app_module_id']))) {
+                                    if (($isExist = ($userAksesAppModule->unique_id == $id . '-' . $dataUserAkses['user_app_module_id']))) {
 
-//                                         break;
-//                                     }
-//                                 }
+                                        $modelUserAksesAppModule = $userAksesAppModule;
+                                        $jsonData = $modelUserAksesAppModule->used_by_user_role;
 
-                                $modelUserAksesAppModule = UserAksesAppModule::findOne(['unique_id' => $id . '-' . $dataUserAkses['user_app_module_id']]);
+                                        $jsonDataExist = false;
 
-                                if (empty($modelUserAksesAppModule)) {
+                                        foreach ($jsonData as $json) {
+
+                                            if ($json == $modelUserRole->unique_id) {
+
+                                                $jsonDataExist = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!$jsonDataExist) {
+
+                                            array_push($jsonData, $modelUserRole->unique_id);
+
+                                            $modelUserAksesAppModule->used_by_user_role = $jsonData;
+                                        }
+
+                                        break;
+                                    }
+                                }
+
+                                if (!$isExist) {
 
                                     $modelUserAksesAppModule = new UserAksesAppModule();
                                     $modelUserAksesAppModule->unique_id = $id . '-' . $dataUserAkses['user_app_module_id'];
                                     $modelUserAksesAppModule->user_id = $id;
                                     $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
+                                    $modelUserAksesAppModule->used_by_user_role = [$modelUserRole->unique_id];
                                 }
 
                                 $modelUserAksesAppModule->is_active = true;
@@ -313,6 +354,38 @@ class UserController extends \backoffice\controllers\BaseController
                                 if (!($flag = $existModelUserRole->save())) {
 
                                     break;
+                                } else {
+
+                                    $modelUserAkses = UserAkses::find()
+                                        ->andWhere(['user_level_id' => $existModelUserRole['user_level_id']])
+                                        ->asArray()->all();
+
+                                    foreach ($modelUserAkses as $dataUserAkses) {
+
+                                        foreach ($model->userAksesAppModules as $existModelUserAksesAppModule) {
+
+                                            if ($existModelUserAksesAppModule->unique_id == $id . '-' . $dataUserAkses['user_app_module_id']) {
+
+                                                $jsonData = $existModelUserAksesAppModule->used_by_user_role;
+
+                                                if (count($jsonData) <= 1) {
+
+                                                    $existModelUserAksesAppModule->is_active = false;
+                                                }
+
+                                                unset($jsonData[array_search($existModelUserRole->unique_id, $jsonData)]);
+                                                $existModelUserAksesAppModule->used_by_user_role = $jsonData;
+
+                                                if (!($flag = $existModelUserAksesAppModule->save())) {
+
+                                                    break 2;
+                                                } else {
+
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
