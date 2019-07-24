@@ -23,7 +23,8 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -32,12 +33,10 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
+}
 
-endif; ?>
+echo $ajaxRequest->component();
 
-<?= $ajaxRequest->component() ?>
-
-<?php
 $form = ActiveForm::begin([
     'id' => 'user-level-form',
     'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->id],
@@ -75,9 +74,13 @@ $form = ActiveForm::begin([
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
+
                                     <?php
-                                    if (!$model->isNewRecord)
-                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']); ?>
+                                    if (!$model->isNewRecord) {
+
+                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']);
+                                    } ?>
+
                                 </div>
                             </div>
                         </div>
@@ -94,12 +97,13 @@ $form = ActiveForm::begin([
 
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-offset-3 col-lg-6">
+
                                     <?php
                                     $icon = '<i class="fa fa-save"></i> ';
                                     echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
                                     echo Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -120,43 +124,49 @@ $form = ActiveForm::begin([
 
                 <div class="x_content">
                     <div class="row" id="roles">
+
                         <?php
                         foreach ($modelUserAppModule as $keySubprogram => $subprogram):
+
                             foreach ($subprogram as $key => $value): ?>
 
                                 <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3" id="roles-item">
                                     <div class="tile-stats">
                                         <h4 style="margin: 10px">
                                             <label>
+
                                                 <?php
                                                 if ($value[0]['sub_program'] == '/') {
+
                                                     echo '(frontend)/' . $key;
                                                 } else {
+
                                                     echo $value[0]['sub_program'] . '/' . $key;
                                                 } ?>
+
                                             </label>
                                         </h4>
                                         <p>
+
                                             <?php
                                             foreach ($value as $moduleAction) {
+
                                                 $checkBoxId = $keySubprogram . $moduleAction['nama_module'] . '-' . $moduleAction['module_action'];
                                                 $checkBoxName = 'roles[' . $keySubprogram . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][action]';
-                                                $hiddenInputName = 'roles[' . $keySubprogram . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][userAksesId]';
-                                                $hiddenInputName2 = 'roles[' . $keySubprogram . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][appModuleId]';
+                                                $hiddenInputName = 'roles[' . $keySubprogram . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][appModuleId]';
                                                 $isActive = false;
-                                                $userAksesId = 0;
 
                                                 if (count($moduleAction['userAkses']) > 0) {
-                                                    $userAksesId = $moduleAction['userAkses'][0]['id'];
+
                                                     $isActive = $moduleAction['userAkses'][0]['is_active'];
                                                 }
 
-                                                echo Html::hiddenInput($hiddenInputName, $userAksesId);
-                                                echo Html::hiddenInput($hiddenInputName2, $moduleAction['id']);
+                                                echo Html::hiddenInput($hiddenInputName, $moduleAction['id']);
                                                 echo Html::checkbox($checkBoxName, $isActive, ['id' => $checkBoxId, 'value' => $moduleAction['id']]) . '&nbsp; &nbsp; ';
                                                 echo Html::label($moduleAction['module_action'], $checkBoxId);
                                                 echo '<br>';
                                             } ?>
+
                                         </p>
                                     </div>
                                 </div>
@@ -169,12 +179,14 @@ $form = ActiveForm::begin([
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-lg-3"></div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-offset-3 col-lg-6">
+
                                 <?php
                                 $icon = '<i class="fa fa-save"></i> ';
+
                                 echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
                                 echo Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']); ?>
+
                             </div>
                         </div>
                     </div>
@@ -184,9 +196,7 @@ $form = ActiveForm::begin([
     </div>
 
 <?php
-ActiveForm::end(); ?>
-
-<?php
+ActiveForm::end();
 
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
