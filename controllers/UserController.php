@@ -128,6 +128,7 @@ class UserController extends \backoffice\controllers\BaseController
 
                             $modelUserAkses = UserAkses::find()
                                 ->andWhere(['user_level_id' => $modelUserRole->user_level_id])
+                                ->andWhere(['is_active' => true])
                                 ->asArray()->all();
 
                             foreach ($modelUserAkses as $dataUserAkses) {
@@ -189,6 +190,12 @@ class UserController extends \backoffice\controllers\BaseController
 
                     $render = 'view';
 
+                    $dataProviderUserRole = new ActiveDataProvider([
+                        'query' => UserRole::find()->joinWith(['userLevel'])->andWhere(['user_role.user_id' => $model->id]),
+                        'pagination' => false,
+                        'sort' => false
+                    ]);
+
                     $transaction->commit();
                 } else {
 
@@ -207,7 +214,8 @@ class UserController extends \backoffice\controllers\BaseController
             'model' => $model,
             'modelUserLevel' => $modelUserLevel,
             'modelUserRole' => $modelUserRole,
-            'dataUserRole' => $dataUserRole
+            'dataUserRole' => $dataUserRole,
+            'dataProviderUserRole' => !empty($dataProviderUserRole) ? $dataProviderUserRole : null
         ]);
     }
 
@@ -278,6 +286,7 @@ class UserController extends \backoffice\controllers\BaseController
 
                             $modelUserAkses = UserAkses::find()
                                 ->andWhere(['user_level_id' => $userLevelId])
+                                ->andWhere(['is_active' => true])
                                 ->asArray()->all();
 
                             foreach ($modelUserAkses as $dataUserAkses) {
@@ -340,14 +349,14 @@ class UserController extends \backoffice\controllers\BaseController
 
                             foreach ($post['UserRole']['user_level_id'] as $userLevelId) {
 
-                                if ($existModelUserRole['user_level_id'] == $userLevelId) {
+                                if ($existModelUserRole->user_level_id == $userLevelId) {
 
                                     $isExist = true;
                                     break;
                                 }
                             }
 
-                            if (!$isExist) {
+                            if (!$isExist && $existModelUserRole->is_active) {
 
                                 $existModelUserRole->is_active = false;
 
@@ -357,7 +366,8 @@ class UserController extends \backoffice\controllers\BaseController
                                 } else {
 
                                     $modelUserAkses = UserAkses::find()
-                                        ->andWhere(['user_level_id' => $existModelUserRole['user_level_id']])
+                                        ->andWhere(['user_level_id' => $existModelUserRole->user_level_id])
+                                        ->andWhere(['is_active' => true])
                                         ->asArray()->all();
 
                                     foreach ($modelUserAkses as $dataUserAkses) {
