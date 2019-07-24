@@ -3,14 +3,14 @@
 namespace backoffice\modules\usermanager\controllers;
 
 use Yii;
+use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 use core\models\UserLevel;
 use core\models\search\UserLevelSearch;
 use core\models\UserAppModule;
 use core\models\UserAkses;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * UserLevelController implements the CRUD actions for UserLevel model.
@@ -41,7 +41,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
     public function actionIndex()
     {
         $searchModel = new UserLevelSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -60,14 +60,15 @@ class UserLevelController extends \backoffice\controllers\BaseController
         $modelUserAppModule = UserAppModule::find()
             ->joinWith([
                 'userAkses' => function ($query) use ($id) {
-                    
+
                     $query->onCondition(['user_akses.user_level_id' => $id]);
                 },
             ])->asArray()->all();
 
         $dataUserAppModule = [];
+
         foreach ($modelUserAppModule as $value) {
-            
+
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
@@ -88,15 +89,15 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
         $model = new UserLevel();
 
-        if ($model->load(Yii::$app->request->post()) && (($post = Yii::$app->request->post()))) {
+        if ($model->load(\Yii::$app->request->post()) && (($post = \Yii::$app->request->post()))) {
 
             if (empty($save)) {
 
-                Yii::$app->response->format = Response::FORMAT_JSON;
+                \Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
                 if (($flag = $model->save())) {
@@ -106,9 +107,11 @@ class UserLevelController extends \backoffice\controllers\BaseController
                         $modelUserAkses = new UserAkses();
                         $modelUserAkses->user_level_id = $model->id;
                         $modelUserAkses->user_app_module_id = $value['appModuleId'];
+                        $modelUserAkses->unique_id = $model->id . '-' . $value['appModuleId'];
                         $modelUserAkses->is_active = !empty($value['action']) ? 1 : 0;
 
                         if (!($flag = $modelUserAkses->save())) {
+
                             break;
                         }
                     }
@@ -116,9 +119,9 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Create data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
 
                     $transaction->commit();
 
@@ -127,9 +130,9 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                     $model->setIsNewRecord(true);
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Create data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -139,14 +142,15 @@ class UserLevelController extends \backoffice\controllers\BaseController
         $modelUserAppModule = UserAppModule::find()
             ->joinWith([
                 'userAkses' => function ($query) use ($model) {
-                    
+
                     $query->onCondition(['user_akses.user_level_id' => $model->id]);
                 },
             ])->asArray()->all();
 
         $dataUserAppModule = [];
+
         foreach ($modelUserAppModule as $value) {
-            
+
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
@@ -166,35 +170,44 @@ class UserLevelController extends \backoffice\controllers\BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(($post = Yii::$app->request->post()))) {
+        if ($model->load(($post = \Yii::$app->request->post()))) {
 
             if (empty($save)) {
 
-                Yii::$app->response->format = Response::FORMAT_JSON;
+                \Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
                 if (($flag = $model->save())) {
 
                     foreach ($post['roles'] as $value) {
 
-                        if ($value['userAksesId'] > 0) {
-                            
-                            $modelUserAkses = UserAkses::findOne($value['userAksesId']);
-                        } else {
+                        $isExist = false;
+
+                        foreach ($model->userAkses as $dataUserAkses) {
+
+                            if (($isExist = ($dataUserAkses->unique_id == $model->id . '-' . $value['appModuleId']))) {
+
+                                $modelUserAkses = $dataUserAkses;
+                                break;
+                            }
+                        }
+
+                        if (!$isExist) {
 
                             $modelUserAkses = new UserAkses();
                             $modelUserAkses->user_level_id = $model->id;
                             $modelUserAkses->user_app_module_id = $value['appModuleId'];
+                            $modelUserAkses->unique_id = $model->id . '-' . $value['appModuleId'];
                         }
 
                         $modelUserAkses->is_active = !empty($value['action']) ? 1 : 0;
 
                         if (!($flag = $modelUserAkses->save())) {
-                            
+
                             break;
                         }
                     }
@@ -202,16 +215,16 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -221,14 +234,15 @@ class UserLevelController extends \backoffice\controllers\BaseController
         $modelUserAppModule = UserAppModule::find()
             ->joinWith([
                 'userAkses' => function ($query) use ($id) {
-                    
+
                     $query->onCondition(['user_akses.user_level_id' => $id]);
                 },
             ])->asArray()->all();
 
         $dataUserAppModule = [];
+
         foreach ($modelUserAppModule as $value) {
-            
+
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
@@ -247,7 +261,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
      */
     public function actionDelete($id)
     {
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
 
         $flag = UserAkses::deleteAll(['user_level_id' => $id]);
 
@@ -257,35 +271,38 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $error = '';
 
             try {
+
                 $flag = $model->delete();
             } catch (yii\db\Exception $exc) {
-                $error = Yii::$app->params['errMysql'][$exc->errorInfo[1]];
+
+                $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
             }
         } else {
+
             $flag = true;
         }
 
         if ($flag) {
 
-            Yii::$app->session->setFlash('status', 'success');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Delete Is Success'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Delete process is success. Data has been deleted'));
+            \Yii::$app->session->setFlash('status', 'success');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Success'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is success. Data has been deleted'));
 
             $transaction->commit();
         } else {
 
-            Yii::$app->session->setFlash('status', 'danger');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Delete Is Fail'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
+            \Yii::$app->session->setFlash('status', 'danger');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Fail'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
 
             $transaction->rollBack();
         }
 
         $return = [];
 
-        $return['url'] = Yii::$app->urlManager->createUrl([$this->module->id . '/user-level/index']);
+        $return['url'] = \Yii::$app->urlManager->createUrl([$this->module->id . '/user-level/index']);
 
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;
     }
 
