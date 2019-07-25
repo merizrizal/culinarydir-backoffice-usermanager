@@ -11,6 +11,8 @@ use core\models\UserLevel;
 use core\models\search\UserLevelSearch;
 use core\models\UserAppModule;
 use core\models\UserAkses;
+use core\models\UserAksesAppModule;
+use core\models\UserRole;
 
 /**
  * UserLevelController implements the CRUD actions for UserLevel model.
@@ -108,7 +110,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
                         $modelUserAkses->user_level_id = $model->id;
                         $modelUserAkses->user_app_module_id = $value['appModuleId'];
                         $modelUserAkses->unique_id = $model->id . '-' . $value['appModuleId'];
-                        $modelUserAkses->is_active = !empty($value['action']) ? 1 : 0;
+                        $modelUserAkses->is_active = !empty($value['action']);
 
                         if (!($flag = $modelUserAkses->save())) {
 
@@ -204,11 +206,53 @@ class UserLevelController extends \backoffice\controllers\BaseController
                             $modelUserAkses->unique_id = $model->id . '-' . $value['appModuleId'];
                         }
 
-                        $modelUserAkses->is_active = !empty($value['action']) ? 1 : 0;
+                        $modelUserAkses->is_active = !empty($value['action']);
 
                         if (!($flag = $modelUserAkses->save())) {
 
                             break;
+                        } else {
+
+                            $modelUserAksesAppModule = UserAksesAppModule::findAll(['user_app_module_id' => $modelUserAkses->user_app_module_id]);
+
+                            foreach ($modelUserAksesAppModule as $dataUserAksesAppModule) {
+
+                                if (count($dataUserAksesAppModule->used_by_user_role) <= 1) {
+
+                                    $dataUserAksesAppModule->is_active = $modelUserAkses->is_active;
+                                } else {
+
+                                    if ($modelUserAkses->is_active) {
+
+                                        $dataUserAksesAppModule->is_active = true;
+                                    } else {
+
+                                        foreach ($dataUserAksesAppModule->used_by_user_role as $dataUserRole) {
+
+                                            $userLevelId = substr($dataUserRole, 34);
+
+                                            if ($userLevelId !== $id) {
+
+                                                $modelUserAkses = UserAkses::find()
+                                                    ->andWhere(['unique_id' => $userLevelId . '-' . $modelUserAkses->user_app_module_id])
+                                                    ->asArray()->one();
+
+                                                $dataUserAksesAppModule->is_active = $modelUserAkses['is_active'];
+
+                                                if ($modelUserAkses['is_active']) {
+
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (!($flag = $dataUserAksesAppModule->save())) {
+
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

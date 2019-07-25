@@ -128,7 +128,6 @@ class UserController extends \backoffice\controllers\BaseController
 
                             $modelUserAkses = UserAkses::find()
                                 ->andWhere(['user_level_id' => $modelUserRole->user_level_id])
-                                ->andWhere(['is_active' => true])
                                 ->asArray()->all();
 
                             foreach ($modelUserAkses as $dataUserAkses) {
@@ -156,7 +155,13 @@ class UserController extends \backoffice\controllers\BaseController
                                         if (!$jsonDataExist) {
 
                                             array_push($jsonData, $modelUserRole->unique_id);
+
                                             $modelUserAksesAppModule->used_by_user_role = $jsonData;
+
+                                            if ($dataUserAkses['is_active'] && !$modelUserAksesAppModule->is_active) {
+
+                                                $modelUserAksesAppModule->is_active = $dataUserAkses['is_active'];
+                                            }
                                         }
 
                                         break;
@@ -169,7 +174,7 @@ class UserController extends \backoffice\controllers\BaseController
                                     $modelUserAksesAppModule->unique_id = $model->id . '-' . $dataUserAkses['user_app_module_id'];
                                     $modelUserAksesAppModule->user_id = $model->id;
                                     $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
-                                    $modelUserAksesAppModule->is_active = true;
+                                    $modelUserAksesAppModule->is_active = $dataUserAkses['is_active'];
                                     $modelUserAksesAppModule->used_by_user_role = [$modelUserRole->unique_id];
                                 }
 
@@ -286,7 +291,6 @@ class UserController extends \backoffice\controllers\BaseController
 
                             $modelUserAkses = UserAkses::find()
                                 ->andWhere(['user_level_id' => $userLevelId])
-                                ->andWhere(['is_active' => true])
                                 ->asArray()->all();
 
                             foreach ($modelUserAkses as $dataUserAkses) {
@@ -316,6 +320,11 @@ class UserController extends \backoffice\controllers\BaseController
                                             array_push($jsonData, $modelUserRole->unique_id);
 
                                             $modelUserAksesAppModule->used_by_user_role = $jsonData;
+
+                                            if ($dataUserAkses['is_active'] && !$modelUserAksesAppModule->is_active) {
+
+                                                $modelUserAksesAppModule->is_active = $dataUserAkses['is_active'];
+                                            }
                                         }
 
                                         break;
@@ -329,9 +338,8 @@ class UserController extends \backoffice\controllers\BaseController
                                     $modelUserAksesAppModule->user_id = $id;
                                     $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
                                     $modelUserAksesAppModule->used_by_user_role = [$modelUserRole->unique_id];
+                                    $modelUserAksesAppModule->is_active = $dataUserAkses['is_active'];
                                 }
-
-                                $modelUserAksesAppModule->is_active = true;
 
                                 if (!($flag = $modelUserAksesAppModule->save())) {
 
