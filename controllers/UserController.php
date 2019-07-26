@@ -291,6 +291,7 @@ class UserController extends \backoffice\controllers\BaseController
 
                             $modelUserAkses = UserAkses::find()
                                 ->andWhere(['user_level_id' => $userLevelId])
+                                ->andWhere(['is_active' => true])
                                 ->asArray()->all();
 
                             foreach ($modelUserAkses as $dataUserAkses) {
