@@ -213,37 +213,41 @@ class UserLevelController extends \backoffice\controllers\BaseController
                             break;
                         } else {
 
-                            $modelUserAksesAppModule = UserAksesAppModule::findAll(['user_app_module_id' => $modelUserAkses->user_app_module_id]);
+                            $modelUserAksesAppModule = UserAksesAppModule::find()
+                                ->andWhere(['user_app_module_id' => $modelUserAkses->user_app_module_id])
+                                ->andWhere(['not', ['used_by_user_role' => null]])
+                                ->all();
 
                             foreach ($modelUserAksesAppModule as $dataUserAksesAppModule) {
 
-                                if (count($dataUserAksesAppModule->used_by_user_role) <= 1) {
+                                foreach ($dataUserAksesAppModule->used_by_user_role as $dataUserRole) {
 
-                                    $dataUserAksesAppModule->is_active = $modelUserAkses->is_active;
-                                } else {
+                                    $userLevelId = substr($dataUserRole, 33);
 
                                     if ($modelUserAkses->is_active) {
 
-                                        $dataUserAksesAppModule->is_active = true;
+                                        if ($userLevelId == $id) {
+
+                                            $dataUserAksesAppModule->is_active = true;
+                                            break;
+                                        }
                                     } else {
 
-                                        foreach ($dataUserAksesAppModule->used_by_user_role as $dataUserRole) {
+                                        if ($userLevelId !== $id && count($dataUserAksesAppModule->used_by_user_role) > 1) {
 
-                                            $userLevelId = substr($dataUserRole, 34);
+                                            $userAkses = UserAkses::find()
+                                                ->andWhere(['unique_id' => $userLevelId . '-' . $modelUserAkses->user_app_module_id])
+                                                ->asArray()->one();
 
-                                            if ($userLevelId !== $id) {
+                                            $dataUserAksesAppModule->is_active = $userAkses['is_active'];
 
-                                                $modelUserAkses = UserAkses::find()
-                                                    ->andWhere(['unique_id' => $userLevelId . '-' . $modelUserAkses->user_app_module_id])
-                                                    ->asArray()->one();
+                                            if ($userAkses['is_active']) {
 
-                                                $dataUserAksesAppModule->is_active = $modelUserAkses['is_active'];
-
-                                                if ($modelUserAkses['is_active']) {
-
-                                                    break;
-                                                }
+                                                break;
                                             }
+                                        } elseif ($userLevelId == $id) {
+
+                                            $dataUserAksesAppModule->is_active = false;
                                         }
                                     }
                                 }
