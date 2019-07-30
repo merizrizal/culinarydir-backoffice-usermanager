@@ -295,45 +295,6 @@ class UserController extends \backoffice\controllers\BaseController
                                     if (($isExist = ($userAksesAppModule->unique_id == $id . '-' . $dataUserAkses['user_app_module_id']))) {
 
                                         $modelUserAksesAppModule = $userAksesAppModule;
-                                        $jsonData = $modelUserAksesAppModule->used_by_user_role;
-
-                                        $jsonDataExist = false;
-
-                                        if (!empty($jsonData)) {
-
-                                            foreach ($jsonData as $json) {
-
-                                                if ($json == $modelUserRole->unique_id) {
-
-                                                    $jsonDataExist = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (!$jsonDataExist) {
-
-                                            if (!empty($jsonData)) {
-
-                                                array_push($jsonData, $modelUserRole->unique_id);
-                                            } else {
-
-                                                $jsonData = [$modelUserRole->unique_id];
-                                            }
-
-                                            $modelUserAksesAppModule->used_by_user_role = $jsonData;
-                                        }
-
-                                        if (empty($tempUserAkses[$dataUserAkses['user_app_module_id']])) {
-
-                                            $tempUserAkses[$dataUserAkses['user_app_module_id']] = $dataUserAkses['is_active'];
-                                        } else {
-
-                                            $tempUserAkses[$dataUserAkses['user_app_module_id']] = $dataUserAkses['is_active'] ? $dataUserAkses['is_active'] : $tempUserAkses[$dataUserAkses['user_app_module_id']];
-                                        }
-
-                                        $modelUserAksesAppModule->is_active = $tempUserAkses[$dataUserAkses['user_app_module_id']];
-
                                         break;
                                     }
                                 }
@@ -346,6 +307,45 @@ class UserController extends \backoffice\controllers\BaseController
                                     $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
                                     $modelUserAksesAppModule->is_active = $dataUserAkses['is_active'];
                                     $modelUserAksesAppModule->used_by_user_role = [$modelUserRole->unique_id];
+                                } else {
+
+                                    $jsonData = $modelUserAksesAppModule->used_by_user_role;
+                                    $jsonDataExist = false;
+
+                                    if (!empty($jsonData)) {
+
+                                        foreach ($jsonData as $json) {
+
+                                            if ($json == $modelUserRole->unique_id) {
+
+                                                $jsonDataExist = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (!$jsonDataExist) {
+
+                                        if (!empty($jsonData)) {
+
+                                            array_push($jsonData, $modelUserRole->unique_id);
+                                        } else {
+
+                                            $jsonData = [$modelUserRole->unique_id];
+                                        }
+
+                                        $modelUserAksesAppModule->used_by_user_role = $jsonData;
+                                    }
+
+                                    if (empty($tempUserAkses[$dataUserAkses['user_app_module_id']])) {
+
+                                        $tempUserAkses[$dataUserAkses['user_app_module_id']] = $dataUserAkses['is_active'];
+                                    } else {
+
+                                        $tempUserAkses[$dataUserAkses['user_app_module_id']] = $dataUserAkses['is_active'] ? $dataUserAkses['is_active'] : $tempUserAkses[$dataUserAkses['user_app_module_id']];
+                                    }
+
+                                    $modelUserAksesAppModule->is_active = $tempUserAkses[$dataUserAkses['user_app_module_id']];
                                 }
 
                                 if (!($flag = $modelUserAksesAppModule->save())) {
