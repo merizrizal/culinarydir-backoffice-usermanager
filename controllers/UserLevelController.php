@@ -12,7 +12,6 @@ use core\models\search\UserLevelSearch;
 use core\models\UserAppModule;
 use core\models\UserAkses;
 use core\models\UserAksesAppModule;
-use core\models\UserRole;
 
 /**
  * UserLevelController implements the CRUD actions for UserLevel model.
