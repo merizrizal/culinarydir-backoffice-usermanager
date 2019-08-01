@@ -9,6 +9,7 @@ use sycomponent\NotificationDialog;
 /* @var $model core\models\UserLevel */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $modelUserAppModule core\models\UserAppModule */
+/* @var $dataAppAkses Array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -94,6 +95,33 @@ $form = ActiveForm::begin([
                         <?= $form->field($model, 'is_super_admin')->checkbox(['value' => true], false) ?>
 
                         <?= $form->field($model, 'keterangan')->textarea(['rows' => 2]) ?>
+
+                        <?= $form->field($model, 'app_akses[app_name]')->checkboxList($dataAppAkses, [
+                            'item' => function ($index, $label, $name, $checked, $value) {
+
+                                $checkboxes = '
+                                    <div class="col-xs-6 col">
+                                        <label>' .
+                                            Html::checkbox($name, $checked, [
+                                                'value' => $value,
+                                                'class' => 'app-akses icheck',
+                                            ]) . ' ' . $label .
+                                        '</label>
+                                    </div>
+                                ';
+
+                                if ($index == 0) {
+
+                                    return '<div class="row">' . $checkboxes;
+                                } elseif ($index == 3) {
+
+                                    return $checkboxes . '</div>';
+                                } else {
+
+                                    return $checkboxes;
+                                }
+                            }
+            	        ]) ?>
 
                         <div class="form-group">
                             <div class="row">

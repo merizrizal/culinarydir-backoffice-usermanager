@@ -155,9 +155,17 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
+        $dataAppAkses = [
+            \Yii::$app->params['appName']['frontend'] => 'Frontend',
+            \Yii::$app->params['appName']['backoffice'] => 'Backoffice',
+            \Yii::$app->params['appName']['user-app'] => 'User App',
+            \Yii::$app->params['appName']['driver-app'] => 'Driver App'
+        ];
+
         return $this->render($render, [
             'model' => $model,
             'modelUserAppModule' => $dataUserAppModule,
+            'dataAppAkses' => $dataAppAkses
         ]);
     }
 
@@ -262,6 +270,37 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
+                    foreach ($model->app_akses['app_name'] as $i => $existAppName) {
+
+                        $isExist = false;
+
+                        foreach ($post['UserLevel']['app_akses']['app_name'] as $appName) {
+
+                            if ($existAppName == $appName) {
+
+                                $isExist = true;
+                                break;
+                            }
+                        }
+
+                        if (!$isExist) {
+
+                            $jsonAppName = $model->app_akses['app_name'];
+
+                            unset($jsonAppName[$i]);
+
+                            $model->app_akses['app_name'] = $jsonAppName;
+
+                            if (!($flag = $model->save())) {
+
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if ($flag) {
+
                     \Yii::$app->session->setFlash('status', 'success');
                     \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
@@ -293,9 +332,17 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
+        $dataAppAkses = [
+            \Yii::$app->params['appName']['frontend'] => 'Frontend',
+            \Yii::$app->params['appName']['backoffice'] => 'Backoffice',
+            \Yii::$app->params['appName']['user-app'] => 'User App',
+            \Yii::$app->params['appName']['driver-app'] => 'Driver App'
+        ];
+
         return $this->render('update', [
             'model' => $model,
             'modelUserAppModule' => $dataUserAppModule,
+            'dataAppAkses' => $dataAppAkses
         ]);
     }
 

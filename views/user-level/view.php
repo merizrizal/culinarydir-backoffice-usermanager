@@ -22,7 +22,8 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -31,15 +32,14 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = $model->nama_level;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Management'), 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Level'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="user-level-view">
 
@@ -49,36 +49,26 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> Create',
-                        ['create'],
-                        [
-                            'class' => 'btn btn-success',
-                            'style' => 'color:white'
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create'], [
+                        'class' => 'btn btn-success',
+                        'style' => 'color:white'
+                    ]) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit',
-                        ['update', 'id' => $model->id],
-                        [
-                            'class' => 'btn btn-primary',
-                            'style' => 'color:white'
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id], [
+                        'class' => 'btn btn-primary',
+                        'style' => 'color:white'
+                    ]) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete',
-                        ['delete', 'id' => $model->id],
-                        [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'style' => 'color:white',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model->id,
-                            'model-name' => $model->nama_level,
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->id], [
+                        'id' => 'delete',
+                        'class' => 'btn btn-danger',
+                        'style' => 'color:white',
+                        'data-not-ajax' => 1,
+                        'model-id' => $model->id,
+                        'model-name' => $model->nama_level,
+                    ]) ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> Cancel',
-                        ['index'],
-                        [
-                            'class' => 'btn btn-default',
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -117,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row" id="roles">
                         <?php
                         foreach ($modelUserAppModule as $keySubprogram => $subprogram):
-                        
+
                             foreach ($subprogram as $key => $value): ?>
 
                             <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3" id="roles-item">
@@ -131,14 +121,14 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                                     <p>
                                         <?php
                                         foreach ($value as $moduleAction) {
-                                            
+
                                             $checkBoxId = $moduleAction['nama_module'] . '-' . $moduleAction['module_action'];
                                             $checkBoxName = 'roles[' . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][action]';
                                             $isActive = false;
                                             $userAksesId = 0;
 
                                             if (count($moduleAction['userAkses']) > 0) {
-                                                
+
                                                 $userAksesId = $moduleAction['userAkses'][0]['id'];
                                                 $isActive = $moduleAction['userAkses'][0]['is_active'];
                                             }
@@ -164,7 +154,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 </div>
 
 <?php
-
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',
@@ -180,8 +169,7 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/masonry/dist/masonry.pkgd.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$jscript = Yii::$app->params['checkbox-radio-script']()
-. '
+$jscript = Yii::$app->params['checkbox-radio-script']() . '
     $(".iCheck-helper").parent().removeClass("disabled");
 
     $("#roles").masonry({
