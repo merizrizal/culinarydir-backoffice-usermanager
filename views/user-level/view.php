@@ -86,6 +86,30 @@ echo $ajaxRequest->component(); ?>
                                 'value' => Html::checkbox('is_super_admin', $model->is_super_admin, ['value' => $model->is_super_admin, 'disabled' => 'disabled']),
                             ],
                             'keterangan:ntext',
+                            [
+                                'attribute' => 'app_akses',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+
+                                    $result = '<div class="row">';
+
+                                    foreach ($model->app_akses['app_name'] as $i => $dataAppName) {
+
+                                        $result .=
+                                            '<div class="col-xs-3">
+                                                <strong>' . $dataAppName . '</strong>
+                                            </div>'
+                                        ;
+
+                                        if ($i % 2 == 0 && $i != 0) {
+
+                                            $result .= '<div class="clearfix"></div>';
+                                        }
+                                    }
+
+                                    return '</div></div>' . $result;
+                                }
+                            ]
                         ],
                     ]) ?>
 
@@ -105,41 +129,42 @@ echo $ajaxRequest->component(); ?>
 
                 <div class="x_content">
                     <div class="row" id="roles">
+
                         <?php
                         foreach ($modelUserAppModule as $keySubprogram => $subprogram):
 
                             foreach ($subprogram as $key => $value): ?>
 
-                            <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3" id="roles-item">
-                                <div class="tile-stats">
-                                    <h4 style="margin: 10px">
-                                        <label>
-                                            <?= $value[0]['sub_program'] . '/' . $key ?>
-                                        </label>
-                                    </h4>
+                                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3" id="roles-item">
+                                    <div class="tile-stats">
+                                        <h4 style="margin: 10px">
+                                            <label>
+                                                <?= $value[0]['sub_program'] . '/' . $key ?>
+                                            </label>
+                                        </h4>
 
-                                    <p>
-                                        <?php
-                                        foreach ($value as $moduleAction) {
+                                        <p>
+                                            <?php
+                                            foreach ($value as $moduleAction) {
 
-                                            $checkBoxId = $moduleAction['nama_module'] . '-' . $moduleAction['module_action'];
-                                            $checkBoxName = 'roles[' . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][action]';
-                                            $isActive = false;
-                                            $userAksesId = 0;
+                                                $checkBoxId = $moduleAction['nama_module'] . '-' . $moduleAction['module_action'];
+                                                $checkBoxName = 'roles[' . $moduleAction['nama_module'] . $moduleAction['module_action'] . '][action]';
+                                                $isActive = false;
+                                                $userAksesId = 0;
 
-                                            if (count($moduleAction['userAkses']) > 0) {
+                                                if (count($moduleAction['userAkses']) > 0) {
 
-                                                $userAksesId = $moduleAction['userAkses'][0]['id'];
-                                                $isActive = $moduleAction['userAkses'][0]['is_active'];
-                                            }
+                                                    $userAksesId = $moduleAction['userAkses'][0]['id'];
+                                                    $isActive = $moduleAction['userAkses'][0]['is_active'];
+                                                }
 
-                                            echo Html::checkbox($checkBoxName, $isActive, ['id' => $checkBoxId, 'value' => $moduleAction['id'], 'disabled' => 'disabled']) . '&nbsp; &nbsp; ';
-                                            echo Html::label($moduleAction['module_action'], $checkBoxId);
-                                            echo '<br>';
-                                        } ?>
-                                    </p>
+                                                echo Html::checkbox($checkBoxName, $isActive, ['id' => $checkBoxId, 'value' => $moduleAction['id'], 'disabled' => 'disabled']) . '&nbsp; &nbsp; ';
+                                                echo Html::label($moduleAction['module_action'], $checkBoxId);
+                                                echo '<br>';
+                                            } ?>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
 
                             <?php
                             endforeach;
