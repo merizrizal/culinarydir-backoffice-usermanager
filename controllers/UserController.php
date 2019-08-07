@@ -2,19 +2,20 @@
 
 namespace backoffice\modules\usermanager\controllers;
 
-use Yii;
 use core\models\User;
+use core\models\UserAkses;
+use core\models\UserAksesAppModule;
 use core\models\UserLevel;
+use core\models\UserRole;
 use core\models\search\UserSearch;
+use yii;
 use sycomponent\Tools;
-use yii\web\NotFoundHttpException;
+use function yii\base\ArrayableTrait\toArray as array_push;
+use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\UserRole;
-use core\models\UserAksesAppModule;
-use core\models\UserAkses;
-use yii\data\ActiveDataProvider;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -85,16 +86,11 @@ class UserController extends \backoffice\controllers\BaseController
 
         $model = new User();
         $modelUserRole = new UserRole();
-
-        $modelUserLevel = UserLevel::find()
-            ->orderBy('nama_level')
-            ->asArray()->all();
-
-        $post = \Yii::$app->request->post();
-
         $dataUserRole = [];
 
-        if ($model->load($post)) {
+        $dataProviderUserRole = null;
+
+        if ($model->load(($post = \Yii::$app->request->post()))) {
 
             if (empty($save)) {
 
@@ -171,7 +167,7 @@ class UserController extends \backoffice\controllers\BaseController
 
                                 if (!($flag = $modelUserAksesAppModule->save())) {
 
-                                    break;
+                                    break 2;
                                 }
                             }
                         }
@@ -206,12 +202,16 @@ class UserController extends \backoffice\controllers\BaseController
             }
         }
 
+        $modelUserLevel = UserLevel::find()
+            ->orderBy('nama_level')
+            ->asArray()->all();
+
         return $this->render($render, [
             'model' => $model,
             'modelUserLevel' => $modelUserLevel,
             'modelUserRole' => $modelUserRole,
             'dataUserRole' => $dataUserRole,
-            'dataProviderUserRole' => !empty($dataProviderUserRole) ? $dataProviderUserRole : null
+            'dataProviderUserRole' => $dataProviderUserRole
         ]);
     }
 
@@ -225,15 +225,9 @@ class UserController extends \backoffice\controllers\BaseController
     {
         $model = $this->findModel($id);
 
-        $modelUserLevel = UserLevel::find()
-            ->orderBy('nama_level')
-            ->asArray()->all();
-
         $dataUserRole = [];
 
-        $post = \Yii::$app->request->post();
-
-        if ($model->load($post)) {
+        if ($model->load(($post = \Yii::$app->request->post()))) {
 
             if (empty($save)) {
 
@@ -350,7 +344,7 @@ class UserController extends \backoffice\controllers\BaseController
 
                                 if (!($flag = $modelUserAksesAppModule->save())) {
 
-                                    break;
+                                    break 2;
                                 }
                             }
                         }
@@ -402,7 +396,7 @@ class UserController extends \backoffice\controllers\BaseController
 
                                                 if (!($flag = $existModelUserAksesAppModule->save())) {
 
-                                                    break 2;
+                                                    break 3;
                                                 } else {
 
                                                     break;
@@ -434,8 +428,6 @@ class UserController extends \backoffice\controllers\BaseController
             }
         }
 
-        $modelUserRole = new UserRole();
-
         if (empty($dataUserRole)) {
 
             foreach ($model->userRoles as $userRole) {
@@ -444,10 +436,14 @@ class UserController extends \backoffice\controllers\BaseController
             }
         }
 
+        $modelUserLevel = UserLevel::find()
+            ->orderBy('nama_level')
+            ->asArray()->all();
+
         return $this->render('update', [
             'model' => $model,
             'modelUserLevel' => $modelUserLevel,
-            'modelUserRole' => $modelUserRole,
+            'modelUserRole' => new UserRole(),
             'dataUserRole' => $dataUserRole
         ]);
     }
