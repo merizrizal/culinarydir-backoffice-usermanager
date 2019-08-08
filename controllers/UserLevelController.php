@@ -90,7 +90,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
         $model = new UserLevel();
 
-        if ($model->load(\Yii::$app->request->post()) && (($post = \Yii::$app->request->post()))) {
+        if ($model->load(($post = \Yii::$app->request->post()))) {
 
             if (empty($save)) {
 
@@ -263,37 +263,6 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                                     break;
                                 }
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    foreach ($model->app_akses['app_name'] as $i => $existAppName) {
-
-                        $isExist = false;
-
-                        foreach ($post['UserLevel']['app_akses']['app_name'] as $appName) {
-
-                            if ($existAppName == $appName) {
-
-                                $isExist = true;
-                                break;
-                            }
-                        }
-
-                        if (!$isExist) {
-
-                            $jsonAppName = $model->app_akses['app_name'];
-
-                            unset($jsonAppName[$i]);
-
-                            $model->app_akses['app_name'] = $jsonAppName;
-
-                            if (!($flag = $model->save())) {
-
-                                break;
                             }
                         }
                     }
