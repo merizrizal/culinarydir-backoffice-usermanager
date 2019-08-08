@@ -154,12 +154,12 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
-        $dataAppAkses = [
-            \Yii::$app->params['appName']['frontend'] => 'Frontend',
-            \Yii::$app->params['appName']['backoffice'] => 'Backoffice',
-            \Yii::$app->params['appName']['user-app'] => 'User App',
-            \Yii::$app->params['appName']['driver-app'] => 'Driver App'
-        ];
+        $modelSettings = Settings::find()
+            ->select(['setting_name', 'setting_value'])
+            ->andWhere(['setting_name' => 'app_name'])
+            ->asArray()->one();
+
+        $dataAppAkses = json_decode($modelSettings['setting_value'], true);
 
         return $this->render($render, [
             'model' => $model,
@@ -295,12 +295,12 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
-        $dataAppAkses = [
-            \Yii::$app->params['appName']['frontend'] => 'Frontend',
-            \Yii::$app->params['appName']['backoffice'] => 'Backoffice',
-            \Yii::$app->params['appName']['user-app'] => 'User App',
-            \Yii::$app->params['appName']['driver-app'] => 'Driver App'
-        ];
+        $modelSettings = Settings::find()
+            ->select(['setting_name', 'setting_value'])
+            ->andWhere(['setting_name' => 'app_name'])
+            ->asArray()->one();
+
+        $dataAppAkses = json_decode($modelSettings['setting_value'], true);
 
         return $this->render('update', [
             'model' => $model,
