@@ -2,16 +2,15 @@
 
 namespace backoffice\modules\usermanager\controllers;
 
-use Yii;
+use core\models\UserAkses;
+use core\models\UserAksesAppModule;
+use core\models\UserAppModule;
+use core\models\UserLevel;
+use core\models\search\UserLevelSearch;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\UserLevel;
-use core\models\search\UserLevelSearch;
-use core\models\UserAppModule;
-use core\models\UserAkses;
-use core\models\UserAksesAppModule;
 
 /**
  * UserLevelController implements the CRUD actions for UserLevel model.
@@ -90,7 +89,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
         $model = new UserLevel();
 
-        if ($model->load(\Yii::$app->request->post()) && (($post = \Yii::$app->request->post()))) {
+        if ($model->load(($post = \Yii::$app->request->post()))) {
 
             if (empty($save)) {
 
@@ -194,23 +193,18 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                     foreach ($post['roles'] as $value) {
 
-                        $isExist = false;
+                        $modelUserAkses = new UserAkses();
+                        $modelUserAkses->user_level_id = $model->id;
+                        $modelUserAkses->user_app_module_id = $value['appModuleId'];
+                        $modelUserAkses->unique_id = $model->id . '-' . $value['appModuleId'];
 
                         foreach ($model->userAkses as $dataUserAkses) {
 
-                            if (($isExist = ($dataUserAkses->unique_id == $model->id . '-' . $value['appModuleId']))) {
+                            if ($dataUserAkses->unique_id == $model->id . '-' . $value['appModuleId']) {
 
                                 $modelUserAkses = $dataUserAkses;
                                 break;
                             }
-                        }
-
-                        if (!$isExist) {
-
-                            $modelUserAkses = new UserAkses();
-                            $modelUserAkses->user_level_id = $model->id;
-                            $modelUserAkses->user_app_module_id = $value['appModuleId'];
-                            $modelUserAkses->unique_id = $model->id . '-' . $value['appModuleId'];
                         }
 
                         $modelUserAkses->is_active = !empty($value['action']);
@@ -252,7 +246,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                                                 break;
                                             }
-                                        } elseif ($userLevelId == $id) {
+                                        } else if ($userLevelId == $id) {
 
                                             $dataUserAksesAppModule->is_active = false;
                                         }
@@ -261,39 +255,8 @@ class UserLevelController extends \backoffice\controllers\BaseController
 
                                 if (!($flag = $dataUserAksesAppModule->save())) {
 
-                                    break;
+                                    break 2;
                                 }
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    foreach ($model->app_akses['app_name'] as $i => $existAppName) {
-
-                        $isExist = false;
-
-                        foreach ($post['UserLevel']['app_akses']['app_name'] as $appName) {
-
-                            if ($existAppName == $appName) {
-
-                                $isExist = true;
-                                break;
-                            }
-                        }
-
-                        if (!$isExist) {
-
-                            $jsonAppName = $model->app_akses['app_name'];
-
-                            unset($jsonAppName[$i]);
-
-                            $model->app_akses['app_name'] = $jsonAppName;
-
-                            if (!($flag = $model->save())) {
-
-                                break;
                             }
                         }
                     }
@@ -367,7 +330,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
             try {
 
                 $flag = $model->delete();
-            } catch (yii\db\Exception $exc) {
+            } catch (\yii\db\Exception $exc) {
 
                 $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
             }

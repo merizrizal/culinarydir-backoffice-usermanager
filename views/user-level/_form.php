@@ -113,7 +113,7 @@ $form = ActiveForm::begin([
                                 if ($index == 0) {
 
                                     return '<div class="row">' . $checkboxes;
-                                } elseif ($index == 3) {
+                                } else if ($index == 3) {
 
                                     return $checkboxes . '</div>';
                                 } else {
