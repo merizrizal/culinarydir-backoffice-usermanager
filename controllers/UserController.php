@@ -8,9 +8,7 @@ use core\models\UserAksesAppModule;
 use core\models\UserLevel;
 use core\models\UserRole;
 use core\models\search\UserSearch;
-use yii;
 use sycomponent\Tools;
-use function yii\base\ArrayableTrait\toArray as array_push;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -499,7 +497,7 @@ class UserController extends \backoffice\controllers\BaseController
 
             try {
                 $flag = $model->delete();
-            } catch (yii\db\Exception $exc) {
+            } catch (\yii\db\Exception $exc) {
                 $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
             }
         }
