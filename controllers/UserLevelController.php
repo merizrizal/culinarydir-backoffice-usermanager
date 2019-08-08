@@ -2,16 +2,16 @@
 
 namespace backoffice\modules\usermanager\controllers;
 
-use Yii;
+use core\models\Settings;
+use core\models\UserAkses;
+use core\models\UserAksesAppModule;
+use core\models\UserAppModule;
+use core\models\UserLevel;
+use core\models\search\UserLevelSearch;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\UserLevel;
-use core\models\search\UserLevelSearch;
-use core\models\UserAppModule;
-use core\models\UserAkses;
-use core\models\UserAksesAppModule;
 
 /**
  * UserLevelController implements the CRUD actions for UserLevel model.
@@ -155,12 +155,12 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
-        $dataAppAkses = [
-            \Yii::$app->params['appName']['frontend'] => 'Frontend',
-            \Yii::$app->params['appName']['backoffice'] => 'Backoffice',
-            \Yii::$app->params['appName']['user-app'] => 'User App',
-            \Yii::$app->params['appName']['driver-app'] => 'Driver App'
-        ];
+        $modelSettings = Settings::find()
+            ->select(['setting_name', 'setting_value'])
+            ->andWhere(['setting_name' => 'app_name'])
+            ->asArray()->one();
+
+        $dataAppAkses = json_decode($modelSettings['setting_value'], true);
 
         return $this->render($render, [
             'model' => $model,
@@ -332,12 +332,12 @@ class UserLevelController extends \backoffice\controllers\BaseController
             $dataUserAppModule[$value['sub_program']][$value['nama_module']][] = $value;
         }
 
-        $dataAppAkses = [
-            \Yii::$app->params['appName']['frontend'] => 'Frontend',
-            \Yii::$app->params['appName']['backoffice'] => 'Backoffice',
-            \Yii::$app->params['appName']['user-app'] => 'User App',
-            \Yii::$app->params['appName']['driver-app'] => 'Driver App'
-        ];
+        $modelSettings = Settings::find()
+            ->select(['setting_name', 'setting_value'])
+            ->andWhere(['setting_name' => 'app_name'])
+            ->asArray()->one();
+
+        $dataAppAkses = json_decode($modelSettings['setting_value'], true);
 
         return $this->render('update', [
             'model' => $model,
@@ -367,7 +367,7 @@ class UserLevelController extends \backoffice\controllers\BaseController
             try {
 
                 $flag = $model->delete();
-            } catch (yii\db\Exception $exc) {
+            } catch (\yii\db\Exception $exc) {
 
                 $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
             }
