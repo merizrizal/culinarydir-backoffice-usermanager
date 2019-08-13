@@ -2,6 +2,7 @@
 
 namespace backoffice\modules\usermanager\controllers;
 
+use core\models\Settings;
 use core\models\UserAkses;
 use core\models\UserAksesAppModule;
 use core\models\UserAppModule;
