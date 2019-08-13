@@ -91,23 +91,26 @@ echo $ajaxRequest->component(); ?>
                                 'format' => 'raw',
                                 'value' => function ($model) {
 
-                                    $result = '<div class="row">';
+                                    if (!empty($model->app_akses['app_name'])) {
 
-                                    foreach ($model->app_akses['app_name'] as $i => $dataAppName) {
+                                        $result = '<div class="row">';
 
-                                        $result .=
-                                            '<div class="col-xs-3">
-                                                <strong>' . $dataAppName . '</strong>
-                                            </div>'
-                                        ;
+                                        foreach ($model->app_akses['app_name'] as $i => $dataAppName) {
 
-                                        if ($i % 2 == 0 && $i != 0) {
+                                            $result .=
+                                                '<div class="col-xs-3">
+                                                    <strong>' . $dataAppName . '</strong>
+                                                </div>'
+                                            ;
 
-                                            $result .= '<div class="clearfix"></div>';
+                                            if ($i % 2 == 0 && $i != 0) {
+
+                                                $result .= '<div class="clearfix"></div>';
+                                            }
                                         }
-                                    }
 
-                                    return '</div></div>' . $result;
+                                        return '</div></div>' . $result;
+                                    }
                                 }
                             ]
                         ],
