@@ -91,9 +91,9 @@ echo $ajaxRequest->component(); ?>
                                 'format' => 'raw',
                                 'value' => function ($model) {
 
-                                    $result = '<div class="row">';
-
                                     if (!empty($model->app_akses['app_name'])) {
+
+                                        $result = '<div class="row">';
 
                                         foreach ($model->app_akses['app_name'] as $i => $dataAppName) {
 
@@ -108,9 +108,9 @@ echo $ajaxRequest->component(); ?>
                                                 $result .= '<div class="clearfix"></div>';
                                             }
                                         }
-                                    }
 
-                                    return '</div></div>' . $result;
+                                        return '</div></div>' . $result;
+                                    }
                                 }
                             ]
                         ],
