@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use yii\helpers\Html;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\UserLevel */
@@ -93,17 +93,20 @@ echo $ajaxRequest->component(); ?>
 
                                     $result = '<div class="row">';
 
-                                    foreach ($model->app_akses['app_name'] as $i => $dataAppName) {
+                                    if (!empty($model->app_akses['app_name'])) {
 
-                                        $result .=
-                                            '<div class="col-xs-3">
-                                                <strong>' . $dataAppName . '</strong>
-                                            </div>'
-                                        ;
+                                        foreach ($model->app_akses['app_name'] as $i => $dataAppName) {
 
-                                        if ($i % 2 == 0 && $i != 0) {
+                                            $result .=
+                                                '<div class="col-xs-3">
+                                                    <strong>' . $dataAppName . '</strong>
+                                                </div>'
+                                            ;
 
-                                            $result .= '<div class="clearfix"></div>';
+                                            if ($i % 2 == 0 && $i != 0) {
+
+                                                $result .= '<div class="clearfix"></div>';
+                                            }
                                         }
                                     }
 
